@@ -1,0 +1,66 @@
+/* Custom styles that extend Tailwind */
+.hero-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 128, 0, 0.3); /* Verde translúcido */
+}
+
+/* Estilos para tarjetas de productos */
+.product-card {
+    background-color: #ffffff; /* Fondo blanco */
+    border: 2px solid #4CAF50; /* Borde verde */
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.3); /* Sombra verde */
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Form validation styles */
+.input-error {
+    border-color: #4CAF50; /* Verde */
+}
+
+.error-message {
+    color: #4CAF50; /* Verde */
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Botón estilo verde */
+.button-primary {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.button-primary:hover {
+    background-color: #45a049;
+}
+
+/* Animación de carga */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Testimonial carousel */
+.testimonial-slide {
+    transition: opacity 0.5s ease;
+}

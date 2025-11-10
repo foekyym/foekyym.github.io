@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú - Cafetería Instituto Universitario</title>
+
+    <!-- Tailwind CSS con configuración -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cafe: {
+                            100: '#e6f5e6',
+                            500: '#71a373',
+                            800: '#2f4b3a',
+                        },
+                        estudio: {
+                            500: '#4F772D',
+                            600: '#3a5a20',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cart-notification {
+            animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <!-- Verificar si está logueado y redirigir si no -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = localStorage.getItem('logueado') === 'true'; // Revisa si el usuario está logueado
+            if (!isLoggedIn) {
+                window.location.href = 'login.html'; // Redirige a login si no está logueado
+            } else {
+                // Si está logueado, se muestra "Cerrar sesión"
+                const logoutLink = document.createElement('a');
+                logoutLink.className = "text-cafe-800 hover:text-estudio-500";
+                logoutLink.textContent = "Cerrar sesión";
+                logoutLink.href = "#";
+                logoutLink.addEventListener('click', () => {
+                    localStorage.removeItem('logueado');
+                    window.location.href = 'login.html'; // Redirigir después de cerrar sesión
+                });
+
+                // Insertamos el enlace de "Cerrar sesión" en el lugar adecuado del menú
+                const nav = document.querySelector('nav');
+                if (nav) {
+                    const loginLink = nav.querySelector('.login-link');
+                    if (loginLink) {
+                        nav.removeChild(loginLink);
+                    }
+                    nav.appendChild(logoutLink); // Añadir el "Cerrar sesión"
+                }
+            }
+        });
+    </script>
+</head>
+
+<body class="bg-cafe-100 min-h-screen">
+    <!-- encabezado -->
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-serif font-bold text-cafe-800">
+                    <a href="index.html">Cafetería IUC</a>
+                </div>
+
+                <!-- Menú escritorio -->
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="text-cafe-800 hover:text-estudio-500 font-medium">Inicio</a>
+                    <a href="menu.html" class="text-cafe-800 hover:text-estudio-500 font-medium">Menú</a>
+                    <a href="carrito.html" class="relative text-cafe-800 hover:text-estudio-500">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cart-counter"
+                            class="absolute -top-2 -right-2 bg-estudio-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </a>
+                    <button onclick="logout()" class="text-cafe-800 hover:text-estudio-500 font-medium">
+                        Cerrar sesión
+                    </button>
+                </nav>
+
+                <!-- Botón menú móvil -->
+                <button id="mobile-menu-button" class="md:hidden text-cafe-800 focus:outline-none relative z-50">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú móvil (AGREGADO) -->
+        <nav id="mobile-menu" class="hidden flex-col space-y-4 bg-white px-4 py-4 border-t shadow-md md:hidden">
+            <a href="index.html" class="text-cafe-800 font-medium">Inicio</a>
+            <a href="menu.html" class="text-cafe-800 font-medium">Menú</a>
+            <a href="carrito.html" class="text-cafe-800 font-medium flex items-center gap-2">
+                <i class="fas fa-shopping-cart text-xl"></i> Carrito
+            </a>
+            <button onclick="logout()" class="text-cafe-800 font-medium text-left">
+                Cerrar sesión
+            </button>
+        </nav>
+    </header>
+
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <!-- Producto 1 -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg" alt="Café"
+                class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 text-cafe-800">Café Estudiantil</h3>
+                <p class="text-cafe-500 mb-3">Capuccino + Ducales</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-estudio-500 font-bold">$3500</span>
+                    <button
+                        class="add-to-cart bg-estudio-500 text-white px-4 py-2 rounded hover:bg-estudio-600 transition"
+                        data-item="Café Estudiantil" data-price="3500">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producto 2 -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <img src="https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg" alt="Wrap"
+                class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 text-cafe-800">Burrito</h3>
+                <p class="text-cafe-500 mb-3">Pechuga, lechuga, tomate y queso</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-estudio-500 font-bold">$5000</span>
+                    <button
+                        class="add-to-cart bg-estudio-500 text-white px-4 py-2 rounded hover:bg-estudio-600 transition"
+                        data-item="Burrito" data-price="5000">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producto 3 -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <img src="https://hazdeoros.com/familiar/wp-content/uploads/2024/06/shutterstock_2441967873-1024x683.jpg"
+                alt="panzerotti" class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 text-cafe-800">Panzerotti</h3>
+                <p class="text-cafe-500 mb-3">Sabor pollo o Hawaiano</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-estudio-500 font-bold">$3000</span>
+                    <button
+                        class="add-to-cart bg-estudio-500 text-white px-4 py-2 rounded hover:bg-estudio-600 transition"
+                        data-item="Panzerotti" data-price="4000">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producto 4 -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <img src="https://images.pexels.com/photos/890471/pexels-photo-890471.jpeg" alt="Frutas"
+                class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 text-cafe-800">Ensalada de Frutas</h3>
+                <p class="text-cafe-500 mb-3">Fresas, banano, uvas y yogurt</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-estudio-500 font-bold">$3800</span>
+                    <button
+                        class="add-to-cart bg-estudio-500 text-white px-4 py-2 rounded hover:bg-estudio-600 transition"
+                        data-item="Ensalada de Frutas" data-price="3800">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producto 5 -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <img src="https://images.pexels.com/photos/315755/pexels-photo-315755.jpeg" alt="Sandwich"
+                class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 text-cafe-800">Sandwich Integral</h3>
+                <p class="text-cafe-500 mb-3">Jamón, queso y vegetales</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-estudio-500 font-bold">$4200</span>
+                    <button
+                        class="add-to-cart bg-estudio-500 text-white px-4 py-2 rounded hover:bg-estudio-600 transition"
+                        data-item="Sandwich Integral" data-price="4200">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producto 6 -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <img src="https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg" alt="Té Helado"
+                class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 text-cafe-800">Té Helado</h3>
+                <p class="text-cafe-500 mb-3">Con limón y hierbabuena</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-estudio-500 font-bold">$2500</span>
+                    <button
+                        class="add-to-cart bg-estudio-500 text-white px-4 py-2 rounded hover:bg-estudio-600 transition"
+                        data-item="Té Helado" data-price="2500">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producto 7 -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <img src="https://images.pexels.com/photos/3771078/pexels-photo-3771078.jpeg" alt="Croissant"
+                class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 text-cafe-800">Croissant</h3>
+                <p class="text-cafe-500 mb-3">Con mantequilla o relleno</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-estudio-500 font-bold">$3000</span>
+                    <button
+                        class="add-to-cart bg-estudio-500 text-white px-4 py-2 rounded hover:bg-estudio-600 transition"
+                        data-item="Croissant" data-price="3000">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producto 8 -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1">
+            <img src="https://images.pexels.com/photos/374052/pexels-photo-374052.jpeg" alt="Jugo Natural"
+                class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 text-cafe-800">Jugo Natural</h3>
+                <p class="text-cafe-500 mb-3">Mango, guayaba o mora</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-estudio-500 font-bold">$2800</span>
+                    <button
+                        class="add-to-cart bg-estudio-500 text-white px-4 py-2 rounded hover:bg-estudio-600 transition"
+                        data-item="Jugo Natural" data-price="2800">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <!-- Notificación de carrito -->
+    <div id="notification" class="fixed bottom-4 right-4 hidden">
+        <div class="cart-notification bg-estudio-500 text-white px-6 py-3 rounded-lg shadow-xl flex items-center">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span id="notification-text" class="font-medium"></span>
+        </div>
+    </div>
+
+    <script>
+        // Código del carrito directamente en la página
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function addToCart(name, price) {
+            // Convertir precio a número
+            price = parseFloat(price);
+
+            cart.push({ name, price });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCounter();
+
+            // Mostrar notificación
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            if (notification && notificationText) {
+                notificationText.textContent = `${name} añadido al carrito`;
+                notification.classList.remove('hidden');
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        function updateCartCounter() {
+            const counter = document.getElementById('cart-counter');
+            if (counter) {
+                counter.textContent = cart.length;
+                counter.classList.toggle('hidden', cart.length === 0);
+            }
+        }
+
+        // Inicializar contador al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCounter();
+
+            // Configurar botones de añadir al carrito
+            const addButtons = document.querySelectorAll('.add-to-cart');
+            addButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const item = button.getAttribute('data-item');
+                    const price = button.getAttribute('data-price');
+                    addToCart(item, price);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

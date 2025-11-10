@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carrito - Cafetería IUC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-gray-100 font-sans">
+  <header class="bg-white shadow-md p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Cafetería IUC</h1>
+      <nav>
+        <a href="index.html" class="text-green-600">Volver al Inicio</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-6">
+    <h2 class="text-xl font-semibold mb-4">Tu Carrito</h2>
+    <div id="cart-items" class="bg-white p-4 rounded-lg shadow-md">
+      <p class="text-center text-gray-500">Tu carrito está vacío</p>
+    </div>
+
+    <div class="mt-4 p-4 bg-white rounded-lg shadow-md">
+      <h3 class="text-lg font-bold">Total: <span id="total">$0.00</span></h3>
+      <button id="checkout-btn" class="w-full mt-4 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700" onclick="generarFactura()">
+        Pagar con Nequi
+      </button>
+    </div>
+
+    <div id="factura-container" class="mt-6 p-6 bg-white rounded-lg shadow-md hidden"></div>
+  </main>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function guardarCarrito() {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function renderCart() {
+        const cartContainer = document.getElementById('cart-items');
+        cartContainer.innerHTML = '';
+
+        if (cart.length === 0) {
+            cartContainer.innerHTML = '<p class="text-center text-gray-500">Tu carrito está vacío</p>';
+            document.getElementById('total').textContent = '$0.00';
+            return;
+        }
+
+        const grouped = {};
+        cart.forEach(item => {
+            if (!grouped[item.name]) {
+                grouped[item.name] = { ...item, quantity: 1 };
+            } else {
+                grouped[item.name].quantity++;
+            }
+        });
+
+        let total = 0;
+        for (const key in grouped) {
+            const item = grouped[key];
+            total += item.price * item.quantity;
+
+            const itemElement = document.createElement('div');
+            itemElement.classList.add('flex', 'justify-between', 'items-center', 'py-2', 'border-b');
+
+            itemElement.innerHTML = `
+                <span>${item.name} ($${item.price}) x${item.quantity}</span>
+                <button class="text-red-500 font-bold text-lg" onclick="quitarItem('${item.name}')">x</button>
+            `;
+
+            cartContainer.appendChild(itemElement);
+        }
+
+        document.getElementById('total').textContent = `$${total.toLocaleString()}`;
+    }
+
+    function quitarItem(name) {
+        const index = cart.findIndex(item => item.name === name);
+        if (index !== -1) {
+            cart.splice(index, 1);
+            guardarCarrito();
+            renderCart();
+        }
+    }
+
+    function generarFactura() {
+        if (cart.length === 0) return;
+
+        const facturaContainer = document.getElementById('factura-container');
+        facturaContainer.classList.remove('hidden');
+
+        let html = `<h3 class="text-xl font-bold mb-4">Factura</h3><ul class="mb-4">`;
+        let total = 0;
+        cart.forEach(item => {
+            html += `<li class="flex justify-between border-b py-1"><span>${item.name}</span><span>$${item.price}</span></li>`;
+            total += item.price;
+        });
+        html += `</ul><p class="text-right font-bold mb-4">Total: $${total.toLocaleString()}</p>`;
+
+        html += `<div id="qrcode" class="flex justify-center mt-4"></div>`;
+        facturaContainer.innerHTML = html;
+
+        const qrData = `Compra exitosamente hecha de $${total.toLocaleString()} a Nequi 1234567890`;
+        new QRCode(document.getElementById("qrcode"), {
+            text: qrData,
+            width: 200,
+            height: 200,
+        });
+
+        cart = [];
+        guardarCarrito();
+        renderCart();
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCart);
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciar sesión - Cafetería</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cafe: {
+              100: '#e6f5e6',
+              500: '#71a373',
+              800: '#2f4b3a',
+            },
+            estudio: {
+              500: '#4F772D',
+              600: '#3a5a20',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Fuente Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-cafe-100 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center text-cafe-800 mb-6">Iniciar Sesión</h2>
+    <form onsubmit="login(event)" class="space-y-4">
+      <div>
+        <label class="block text-cafe-800 font-medium mb-1">Usuario</label>
+        <input type="text" id="usuario" class="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-estudio-500" required>
+      </div>
+      <div>
+        <label class="block text-cafe-800 font-medium mb-1">Contraseña</label>
+        <input type="password" id="clave" class="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-estudio-500" required>
+      </div>
+      <button type="submit" class="w-full bg-estudio-500 hover:bg-estudio-600 text-white font-semibold py-2 rounded transition">Ingresar</button>
+      <p id="mensaje-error" class="text-red-600 text-sm text-center hidden">Usuario o contraseña incorrectos</p>
+    </form>
+  </div>
+
+  <script>
+    function login(event) {
+      event.preventDefault();
+
+      const usuario = document.getElementById("usuario").value;
+      const clave = document.getElementById("clave").value;
+
+      const userValido = "admin";
+      const claveValida = "1234";
+
+      if (usuario === userValido && clave === claveValida) {
+        localStorage.setItem("logueado", "true");
+        window.location.href = "index.html";
+      } else {
+        document.getElementById("mensaje-error").classList.remove("hidden");
+      }
+    }
+
+    // Redirigir si ya está logueado
+    if (localStorage.getItem("logueado") === "true") {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

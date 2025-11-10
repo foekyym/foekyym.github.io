@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafetería Instituto Universitario</title>
+
+    <!-- Verificación de login (primero en el head) -->
+    <script>
+        if (localStorage.getItem("logueado") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <!-- Tailwind y configuración -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cafe: {
+                            100: '#E6F4E6',
+                            500: '#4CAF50',
+                            800: '#1B5E20',
+                        },
+                        estudio: {
+                            500: '#4F772D',
+                            600: '#3a5a20',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Libre Baskerville', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Libre+Baskerville:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body class="font-sans bg-cafe-100">
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-serif font-bold text-cafe-800">
+                    <a href="index.html">Cafetería IUC</a>
+                </div>
+
+                <!-- Menú escritorio -->
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="text-cafe-800 hover:text-estudio-500 font-medium">Inicio</a>
+                    <a href="menu.html" class="text-cafe-800 hover:text-estudio-500 font-medium">Menú</a>
+                    <a href="carrito.html" class="relative text-cafe-800 hover:text-estudio-500">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cart-counter"
+                            class="absolute -top-2 -right-2 bg-estudio-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </a>
+                    <button onclick="logout()" class="text-cafe-800 hover:text-estudio-500 font-medium">
+                        Cerrar sesión
+                    </button>
+                </nav>
+
+                <!-- Botón menú móvil -->
+                <button id="mobile-menu-button" class="md:hidden text-cafe-800 focus:outline-none relative z-50">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú móvil (AGREGADO) -->
+        <nav id="mobile-menu" class="hidden flex-col space-y-4 bg-white px-4 py-4 border-t shadow-md md:hidden">
+            <a href="index.html" class="text-cafe-800 font-medium">Inicio</a>
+            <a href="menu.html" class="text-cafe-800 font-medium">Menú</a>
+            <a href="carrito.html" class="text-cafe-800 font-medium flex items-center gap-2">
+                <i class="fas fa-shopping-cart text-xl"></i> Carrito
+            </a>
+            <button onclick="logout()" class="text-cafe-800 font-medium text-left">
+                Cerrar sesión
+            </button>
+        </nav>
+    </header>
+
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+    <main class="pt-16">
+        <section class="relative h-64 flex items-center justify-center bg-cafe-500 text-white">
+            <div class="text-center">
+                <h1 class="text-3xl md:text-4xl font-serif font-bold mb-4">Bienvenido a la Cafetería del IUC</h1>
+                <p class="text-xl">Pida su comida y reclámela en una fila especial rápida como si fuera un VIP</p>
+            </div>
+        </section>
+
+        <section class="py-12 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-serif font-bold text-center mb-8 text-cafe-800">Combos Populares</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-cafe-100 rounded-lg p-6 flex items-center">
+                        <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg" alt="Combo 1"
+                            class="w-24 h-24 object-cover rounded-full mr-4">
+                        <div>
+                            <h3 class="text-xl font-bold mb-1 text-cafe-800">Combo Parchado</h3>
+                            <p class="text-cafe-500 mb-2">Sándwich + Jugo + Ducales</p>
+                            <p class="text-estudio-500 font-bold">$7500</p>
+                            <button
+                                class="add-to-cart mt-1 bg-estudio-500 text-white px-3 py-1 rounded text-sm hover:bg-estudio-600 transition"
+                                data-item="Combo Parchado" data-price="7500">
+                                Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-cafe-100 rounded-lg p-6 flex items-center">
+                        <img src="https://images.pexels.com/photos/1633525/pexels-photo-1633525.jpeg" alt="Combo 2"
+                            class="w-24 h-24 object-cover rounded-full mr-4">
+                        <div>
+                            <h3 class="text-xl font-bold mb-1 text-cafe-800">Combo Almuerzo</h3>
+                            <p class="text-cafe-500 mb-2">Burrito + Fruta + Bebida</p>
+                            <p class="text-estudio-500 font-bold">$12500</p>
+                            <button
+                                class="add-to-cart mt-1 bg-estudio-500 text-white px-3 py-1 rounded text-sm hover:bg-estudio-600 transition"
+                                data-item="Combo Almuerzo" data-price="12500">
+                                Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-cafe-800 text-white py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Cafetería Instituto Universitario de Caldas. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Notificación de carrito -->
+    <div id="notification" class="fixed bottom-4 right-4 hidden">
+        <div class="bg-estudio-500 text-white px-6 py-3 rounded-lg shadow-xl flex items-center">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span id="notification-text" class="font-medium"></span>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function addToCart(name, price) {
+            price = parseFloat(price);
+            cart.push({ name, price });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCounter();
+
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            if (notification && notificationText) {
+                notificationText.textContent = `${name} añadido al carrito`;
+                notification.classList.remove('hidden');
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        function updateCartCounter() {
+            const counter = document.getElementById('cart-counter');
+            if (counter) {
+                counter.textContent = cart.length;
+                counter.classList.toggle('hidden', cart.length === 0);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCounter();
+            const addButtons = document.querySelectorAll('.add-to-cart');
+            addButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const item = button.getAttribute('data-item');
+                    const price = button.getAttribute('data-price');
+                    addToCart(item, price);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        function logout() {
+            localStorage.removeItem("logueado");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+
+</html>
